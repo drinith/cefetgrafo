@@ -17,6 +17,7 @@ class Aresta:
         self.v1=vertice1
         self.v2=vertice2
         self.peso=peso
+  
 
 class Grafo:
 
@@ -30,6 +31,7 @@ class Grafo:
         self.ciclo=0
         self.caminho=[]
         self.matriz=[]
+        self.arestaArmazenada=[]
 
     def carregaListaVerticeCarga(self,path):
         arq = open(path, 'r')
@@ -172,6 +174,41 @@ class Grafo:
             self.pilha.append(u)
             for a in u.listaAdj:
                 self.relax(a.v1,a.v2,a.peso)
+    
+    def kruskal(self):
+        
+        #ordeno as arestas
+        arestaOrdem = sorted(self.arestaLista,key=lambda item: item.peso)
+        
+        count=0
+        for v in self.verticeLista:
+            v.anterior=v
+
+        while(arestaOrdem!=[]):
+            a=arestaOrdem.pop(0)
+            print(self.find(a.v2).nome)
+            if(a.v2.nome==self.find(a.v1).nome):
+                print("tem um loop")
+            else:
+                a.v2.anterior=a.v1
+                a.v2.visitado="cinza"
+                a.v1.visitado="cinza"
+                self.arestaArmazenada.append(a)               
+                count+=a.peso
+            
+        print(count)
+
+    def teste(self, a:Aresta):
+        teste = True
+        for aArma in self.arestaArmazenada:
+            if(aArma.v1.nome==a.v2.nome and aArma.v2.nome==a.v1.nome):
+                teste= False
+        return teste
+    def find(self,vertice:Vertice)->Vertice:
+
+        while vertice!=vertice.anterior :
+            vertice=self.find(vertice.anterior)
+        return vertice
 
     def prim(self,raiz:Vertice):
         count =0
@@ -181,7 +218,7 @@ class Grafo:
             v.anterior= None
             self.fila.append(v)
         raiz.distancia=0
-        posicao+=raiz.nome+"->"
+
         while self.fila != []:
             u = self.extractMin(self.fila)
             u.visitado="cinza"
@@ -228,7 +265,9 @@ class Grafo:
             self.imprimirVerticesCaminhos(vertice.anterior)
         else:
             print('O vertice %s não vem de nenhum lugar'% (vertice.nome))
-  
+    
+
+
     def printArmazenaOrdem(self):
        
         sequencia=" "
@@ -282,7 +321,9 @@ if __name__=="__main__":
 
     grafo = Grafo()
     grafo.carregaListaVerticeCarga('carga_aresta.txt')
-    grafo.prim(grafo.verticeLista[2])
+    #grafo.prim(grafo.verticeLista[2])
+    grafo.kruskal()
     #print (grafo.ciclo)
  
+
 
