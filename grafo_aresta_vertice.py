@@ -10,6 +10,7 @@ class Vertice:
         self.anterior=None
         self.distancia=0
         self.chave=0
+        self.rank=0
   
 class Aresta:
 
@@ -183,21 +184,38 @@ class Grafo:
         count=0
         for v in self.verticeLista:
             v.anterior=v
+            v.rank=0
 
         while(arestaOrdem!=[]):
             a=arestaOrdem.pop(0)
-            print(self.find(a.v2).nome)
-            if(a.v2.nome==self.find(a.v1).nome):
-                print("tem um loop")
-            else:
-                a.v2.anterior=a.v1
-                a.v2.visitado="cinza"
-                a.v1.visitado="cinza"
-                self.arestaArmazenada.append(a)               
+
+            x=self.find(a.v1)
+            y=self.find(a.v2)
+
+            if(x!=y):
+                self.arestaArmazenada.append(a)
+                self.union(x,y)      
                 count+=a.peso
             
         print(count)
 
+    def union(self,x,y):
+
+        xroot = self.find(x) 
+        yroot = self.find(y) 
+
+        # Attach smaller rank tree under root of  
+        # high rank tree (Union by Rank) 
+        if xroot.rank < yroot.rank: 
+            xroot.anterior = yroot 
+        elif xroot.rank > yroot.rank: 
+            yroot.anterior = xroot 
+  
+        # If ranks are same, then make one as root  
+        # and increment its rank by one 
+        else : 
+            yroot.anterior = xroot 
+            xroot.rank += 1
     def teste(self, a:Aresta):
         teste = True
         for aArma in self.arestaArmazenada:
@@ -206,9 +224,9 @@ class Grafo:
         return teste
     def find(self,vertice:Vertice)->Vertice:
 
-        while vertice!=vertice.anterior :
-            vertice=self.find(vertice.anterior)
-        return vertice
+        while vertice==vertice.anterior :
+            return vertice
+        return self.find(vertice.anterior)
 
     def prim(self,raiz:Vertice):
         count =0

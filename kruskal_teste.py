@@ -55,7 +55,7 @@ class Graph:
             # Step 1:  Sort all the edges in non-decreasing  
                 # order of their 
                 # weight.  If we are not allowed to change the  
-                # given graph, we can create a copy of graph 
+                # given graph, we can create a copy of graph   
         self.graph =  sorted(self.graph,key=lambda item: item[2]) 
   
         parent = [] ; rank = [] 
@@ -70,7 +70,7 @@ class Graph:
   
             # Step 2: Pick the smallest edge and increment  
                     # the index for next iteration 
-            u,v,w =  self.graph[i] 
+            u,v,w =  self.graph.pop(0)
             i = i + 1
             x = self.find(parent, u) 
             y = self.find(parent ,v) 
@@ -93,8 +93,11 @@ class Graph:
 
 if __name__ == "__main__":
 
-    g = Graph(3)
-    g.addEdge(1,2,1)
-    g.addEdge(2,1,2)
-    g.addEdge(1,1,5)
+    g = Graph(6)
+    g.addEdge(1,2,5) 
+    g.addEdge(2,1,5)
+    g.addEdge(1,3,6)
+    g.addEdge(3,1,6)
+    g.addEdge(3,2,7)
+    g.addEdge(2,3,7)
     g.KruskalMST()
