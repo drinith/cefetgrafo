@@ -199,29 +199,17 @@ class Grafo:
             
         print(count)
 
-    def union(self,x,y):
+    def union(self,xroot,yroot):
 
-        xroot = self.find(x) 
-        yroot = self.find(y) 
-
-        # Attach smaller rank tree under root of  
-        # high rank tree (Union by Rank) 
         if xroot.rank < yroot.rank: 
             xroot.anterior = yroot 
         elif xroot.rank > yroot.rank: 
             yroot.anterior = xroot 
   
-        # If ranks are same, then make one as root  
-        # and increment its rank by one 
         else : 
             yroot.anterior = xroot 
             xroot.rank += 1
-    def teste(self, a:Aresta):
-        teste = True
-        for aArma in self.arestaArmazenada:
-            if(aArma.v1.nome==a.v2.nome and aArma.v2.nome==a.v1.nome):
-                teste= False
-        return teste
+    
     def find(self,vertice:Vertice)->Vertice:
 
         while vertice==vertice.anterior :
@@ -237,8 +225,11 @@ class Grafo:
             self.fila.append(v)
         raiz.distancia=0
 
+        
+
         while self.fila != []:
-            u = self.extractMin(self.fila)
+            self.fila = sorted(self.fila,key=lambda item: item.distancia)
+            u = self.fila.pop(0)
             u.visitado="cinza"
             posicao+=u.nome+"->"
             count+=u.distancia
@@ -331,8 +322,36 @@ class Grafo:
 
     #Agora teria que rodar a busca em profundidade
 
+    def fordFulkerson(self,source:Vertice,sink:Vertice):
+        #aqui poderia inicializar mas já uso none nos anteriores
 
+        max_flow=0
+        
+        #Testar primeiro o BFS
+        while self.BFSFord(source,sink):
+            pass
+        
 
+    def BFSFord(self,source:Vertice,sink:Vertice):
+        
+        self.fila.append(source)
+        source.visitado='cinza'
+
+        while self.pilha:
+
+            u= self.pilha.pop(0)
+
+            for a in u.listaAdj:
+
+                if a.v2.visitado=="branco" and a.peso>0:
+                    self.fila.append(a)
+                    a.v2.visitado="cinza"
+                    a.v2.anterior = u
+
+        return True if sink.visitado=="cinza" else False        
+
+#Anotações 
+# self.fila = sorted(self.fila,key=lambda item: item.distancia)
 
 
 if __name__=="__main__":
@@ -340,8 +359,9 @@ if __name__=="__main__":
     grafo = Grafo()
     grafo.carregaListaVerticeCarga('carga_aresta.txt')
     #grafo.prim(grafo.verticeLista[2])
-    grafo.kruskal()
+    #grafo.kruskal()
     #print (grafo.ciclo)
+    
  
 
 
