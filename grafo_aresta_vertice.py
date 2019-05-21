@@ -224,9 +224,6 @@ class Grafo:
             v.anterior= None
             self.fila.append(v)
         raiz.distancia=0
-
-        
-
         while self.fila != []:
             self.fila = sorted(self.fila,key=lambda item: item.distancia)
             u = self.fila.pop(0)
