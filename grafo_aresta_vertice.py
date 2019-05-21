@@ -11,6 +11,7 @@ class Vertice:
         self.distancia=0
         self.chave=0
         self.rank=0
+        self.aresta=None
   
 class Aresta:
 
@@ -18,6 +19,7 @@ class Aresta:
         self.v1=vertice1
         self.v2=vertice2
         self.peso=peso
+        self.reAresta=None
   
 
 class Grafo:
@@ -25,6 +27,7 @@ class Grafo:
     def __init__(self):
         self.fila = []
         self.pilha = []
+        self.lista =[]
         self.verticeLista = []
         self.arestaLista =[]
         self.armazenaOrdem = []
@@ -281,24 +284,13 @@ class Grafo:
             sequencia = sequencia+"->"+o.nome
         print(sequencia)   
 
-    def printCaminho (self,inicio:Vertice,fim:Vertice):
-        caminhoencontrado = False
-        if(fim.anterior is None):
-            print ('Vertice inicial não tem caminho para o final')
-        else:
-            if(inicio.nome == fim.anterior.nome):
-                print ('Caminho encontrado' )
-                caminhoencontrado = True
-            else:
-                print('Caminho ainda não encontrado')
-                self.caminho.append(fim)
-                self.printCaminho(inicio,fim.anterior)
-
-        if(caminhoencontrado):
-            for v in self.caminho:
-                print(v.nome)
-        else:
-            print ('Vertice inicial não tem caminho para o final')
+    def caminhoLista (self,inicio:Vertice,fim:Vertice):
+       
+       if (inicio!=fim):
+           self.lista.append(fim)
+           self.caminhoLista(inicio,fim.anterior)
+       else:
+           return self.lista    
     
     def solucaoProblemaProva(self):
 
@@ -321,12 +313,20 @@ class Grafo:
 
     def fordFulkerson(self,source:Vertice,sink:Vertice):
         #aqui poderia inicializar mas já uso none nos anteriores
-
+        aReLista=[]
+        for a in self.arestaLista:
+            aRe = Aresta(a.v2,a.v1,0)
+            a.reAresta = aRe
+            aReLista.append(aRe)
+        self.arestaLista.extend(aReLista)
         max_flow=0
-        
+        listaVertice=[]
         #Testar primeiro o BFS
         while self.BFSFord(source,sink):
-            pass
+            self.caminhoLista(source,sink)
+            sorted(self.lista,key=lambda item:item.aresta.peso)
+            path_flow = self.lista.pop(0).aresta.peso
+            
         
 
     def BFSFord(self,source:Vertice,sink:Vertice):
@@ -334,16 +334,17 @@ class Grafo:
         self.fila.append(source)
         source.visitado='cinza'
 
-        while self.pilha:
+        while self.fila!=[]:
 
-            u= self.pilha.pop(0)
+            u= self.fila.pop(0)
 
             for a in u.listaAdj:
 
                 if a.v2.visitado=="branco" and a.peso>0:
-                    self.fila.append(a)
+                    self.fila.append(a.v2)
                     a.v2.visitado="cinza"
                     a.v2.anterior = u
+                    a.v2.aresta =a
 
         return True if sink.visitado=="cinza" else False        
 
@@ -358,6 +359,7 @@ if __name__=="__main__":
     #grafo.prim(grafo.verticeLista[2])
     #grafo.kruskal()
     #print (grafo.ciclo)
+    grafo.fordFulkerson(grafo.verticeLista[0],grafo.verticeLista[3])
     
  
 

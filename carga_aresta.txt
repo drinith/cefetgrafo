@@ -3,29 +3,8 @@ A
 B
 C
 D
-E
-F
-G
 Ligacoes
-c A 3
-A C 3
-C B 4
-B C 4
-C E 1
-E C 1
-C F 6
-F C 6
-C D 5
-D C 5
-F G 9
-G F 9
-A B 2
-B A 2
-B E 3
-E B 3
-E F 8
-F E 8
-F D 7
-D F 7
-D A 3
-A D 3
+A B 3
+A C 2
+C D 4
+B D 2
